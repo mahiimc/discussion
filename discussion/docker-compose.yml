@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16.3
+    container_name: postgres
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1g
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=discussion
+    ports:
+      - 5432:5432
+    networks:
+      - common
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    shm_size: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  redis:
+    image: redis:latest
+    container_name: cache
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1g
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 6379:6379
+    networks:
+      - common
+    restart: unless-stopped
+
+volumes:
+  postgres:
+
+networks:
+  common:
+    driver: bridge

@@ -1,0 +1,13 @@
+.auth-layout {
+    display: flex;
+    width: 50%;
+    justify-content: start;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+}
+.login-form {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
